@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { Search, MapPin, Users, Award, ExternalLink, Building2, Calendar, ChevronDown } from 'lucide-react';
+import { MapPin, Users, Award, ExternalLink, Building2, GraduationCap, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -72,7 +72,6 @@ const CollegeDirectory = () => {
         <div className="mb-12">
           <div className="max-w-2xl mx-auto">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search colleges by name or location..."
@@ -165,14 +164,14 @@ const CollegeDirectory = () => {
                     rel="noopener noreferrer"
                     className="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-colors"
                   >
+                    <ExternalLink className="h-4 w-4 mr-2" />
                     Visit Website
-                    <ExternalLink className="ml-2 h-4 w-4" />
                   </a>
                   <Link
                     to={`/college/${college.id}`}
                     className="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
                   >
-                    View Details
+                    <GraduationCap className="h-5 w-5" />
                   </Link>
                 </div>
               </div>
