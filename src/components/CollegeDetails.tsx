@@ -47,17 +47,17 @@ const CollegeDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F9FE]">
+    <div className="min-h-screen bg-[#F8F9FE] pt-20">
       {/* Hero Section */}
-      <div className="relative h-[400px] bg-gray-900">
-        <img
-          src={college.image}
-          alt={college.name}
-          className="w-full h-full object-cover opacity-50"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
-        <div className="absolute bottom-0 left-0 right-0 p-8">
-          <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative h-[300px] bg-gray-900 rounded-2xl overflow-hidden">
+          <img
+            src={college.image}
+            alt={college.name}
+            className="w-full h-full object-cover opacity-50"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/50 to-transparent"></div>
+          <div className="absolute bottom-0 left-0 right-0 p-8">
             <h1 className="text-4xl font-bold text-white">{college.name}</h1>
             <div className="flex items-center text-gray-300 mt-2">
               <MapPin className="h-5 w-5 mr-2" />
