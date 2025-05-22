@@ -49,7 +49,7 @@ const CollegeDetails = () => {
     try {
       const { data, error } = await supabase
         .from('college_reviews')
-        .select('*, auth_users:user_id (email)')
+        .select('*, profiles (email)')
         .eq('college_id', id)
         .eq('status', 'approved')
         .order('created_at', { ascending: false });
@@ -266,7 +266,7 @@ const CollegeDetails = () => {
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <h4 className="text-lg font-semibold text-gray-900">
-                        {review.auth_users?.email.split('@')[0] || 'Anonymous'}
+                        {review.profiles?.email.split('@')[0] || 'Anonymous'}
                       </h4>
                       <span className="text-sm text-gray-500">
                         {new Date(review.created_at).toLocaleDateString()}

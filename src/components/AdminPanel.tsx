@@ -45,7 +45,7 @@ export default function AdminPanel() {
         supabase.from('college_reviews').select(`
           *,
           colleges (name),
-          profiles:user_id (full_name, email)
+          profiles (full_name, email)
         `).order('created_at', { ascending: false })
       ]);
 
@@ -78,8 +78,6 @@ export default function AdminPanel() {
     }
   };
 
-  // Previous component definitions (CollegeForm, EventForm, PredictionForm, Modal) remain the same
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -94,8 +92,6 @@ export default function AdminPanel() {
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Panel</h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Previous management cards (Colleges, Events, KEAM Predictions) remain the same */}
-
           {/* Reviews Management */}
           <div className="bg-white rounded-lg shadow p-6 lg:col-span-2">
             <div className="flex items-center justify-between mb-4">
@@ -153,8 +149,6 @@ export default function AdminPanel() {
             </div>
           </div>
         </div>
-
-        {/* Previous modals (CollegeForm, EventForm, PredictionForm) remain the same */}
       </div>
     </div>
   );
