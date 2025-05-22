@@ -49,12 +49,7 @@ const CollegeDetails = () => {
     try {
       const { data, error } = await supabase
         .from('college_reviews')
-        .select(`
-          *,
-          users:user_id (
-            email
-          )
-        `)
+        .select('*, auth_users:user_id (email)')
         .eq('college_id', id)
         .eq('status', 'approved')
         .order('created_at', { ascending: false });
@@ -176,85 +171,6 @@ const CollegeDetails = () => {
           </div>
         </div>
 
-        {/* Accreditation Section */}
-        <div className="bg-white rounded-2xl shadow-sm p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Accreditation</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-6 bg-[#F8F9FE] rounded-xl">
-              <h3 className="text-lg font-semibold mb-2">NAAC Grade</h3>
-              <div className="flex items-center">
-                <span className="text-3xl font-bold text-indigo-600">
-                  {college.accreditation?.naac?.grade}
-                </span>
-                <span className="ml-2 text-gray-500">
-                  (Score: {college.accreditation?.naac?.score})
-                </span>
-              </div>
-            </div>
-            <div className="p-6 bg-[#F8F9FE] rounded-xl">
-              <h3 className="text-lg font-semibold mb-2">NBA Accreditation</h3>
-              <div className="flex items-center text-indigo-600">
-                <CheckCircle2 className="h-6 w-6 mr-2" />
-                <span>NBA Accredited</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Courses Section */}
-        <div className="bg-white rounded-2xl shadow-sm p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Courses Offered</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {Object.entries(college.intake?.branches || {}).map(([branch, seats]) => (
-              <div key={branch} className="flex items-center p-4 bg-[#F8F9FE] rounded-xl">
-                <GraduationCap className="h-6 w-6 text-indigo-600 mr-3" />
-                <div>
-                  <p className="font-medium">{branch}</p>
-                  <p className="text-sm text-gray-500">{seats} seats</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Facilities Section */}
-        <div className="bg-white rounded-2xl shadow-sm p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Campus Facilities</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {college.facilities?.map((facility, index) => (
-              <div key={index} className="flex items-center p-4 bg-[#F8F9FE] rounded-xl">
-                <div className="text-indigo-600 mr-3">›</div>
-                <span>{facility}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Placement Statistics */}
-        <div className="bg-white rounded-2xl shadow-sm p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Placement Statistics</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 bg-[#F8F9FE] rounded-xl text-center">
-              <p className="text-gray-500 mb-2">Average Package</p>
-              <p className="text-3xl font-bold text-indigo-600">
-                ₹{college.placement?.averagePackage}L
-              </p>
-            </div>
-            <div className="p-6 bg-[#F8F9FE] rounded-xl text-center">
-              <p className="text-gray-500 mb-2">Highest Package</p>
-              <p className="text-3xl font-bold text-indigo-600">
-                ₹{college.placement?.highestPackage}L
-              </p>
-            </div>
-            <div className="p-6 bg-[#F8F9FE] rounded-xl text-center">
-              <p className="text-gray-500 mb-2">Placement Rate</p>
-              <p className="text-3xl font-bold text-indigo-600">
-                {college.placement?.placementPercentage}%
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* Reviews Section */}
         <div className="bg-white rounded-2xl shadow-sm p-8 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
@@ -350,7 +266,7 @@ const CollegeDetails = () => {
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <h4 className="text-lg font-semibold text-gray-900">
-                        {review.users?.email.split('@')[0] || 'Anonymous'}
+                        {review.auth_users?.email.split('@')[0] || 'Anonymous'}
                       </h4>
                       <span className="text-sm text-gray-500">
                         {new Date(review.created_at).toLocaleDateString()}
