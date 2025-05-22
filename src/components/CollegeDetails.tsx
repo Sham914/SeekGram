@@ -51,9 +51,8 @@ const CollegeDetails = () => {
         .from('college_reviews')
         .select(`
           *,
-          profiles:user_id (
-            full_name,
-            avatar_url
+          users:user_id (
+            email
           )
         `)
         .eq('college_id', id)
@@ -345,21 +344,13 @@ const CollegeDetails = () => {
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
                     <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                      {review.profiles?.avatar_url ? (
-                        <img
-                          src={review.profiles.avatar_url}
-                          alt={review.profiles.full_name}
-                          className="h-12 w-12 rounded-full"
-                        />
-                      ) : (
-                        <User className="h-6 w-6 text-indigo-600" />
-                      )}
+                      <User className="h-6 w-6 text-indigo-600" />
                     </div>
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <h4 className="text-lg font-semibold text-gray-900">
-                        {review.profiles?.full_name || 'Anonymous'}
+                        {review.users?.email.split('@')[0] || 'Anonymous'}
                       </h4>
                       <span className="text-sm text-gray-500">
                         {new Date(review.created_at).toLocaleDateString()}
