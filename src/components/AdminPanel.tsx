@@ -13,7 +13,7 @@ const districts = ['Thiruvananthapuram', 'Kollam', 'Pathanamthitta', 'Alappuzha'
 const categories = ['General', 'SC', 'ST', 'OBC', 'OEC'] as const;
 const branches = ['Computer Science', 'Electronics', 'Electrical', 'Mechanical', 'Civil'] as const;
 
-@@ -16,6 +17,7 @@ export default function AdminPanel() {
+export default function AdminPanel() {
   const [colleges, setColleges] = useState<College[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
@@ -21,7 +21,7 @@ const branches = ['Computer Science', 'Electronics', 'Electrical', 'Mechanical',
   const [loading, setLoading] = useState(true);
 
   // Modal states
-@@ -36,405 +38,47 @@ export default function AdminPanel() {
+export default function AdminPanel() {
  const [showEditModal, setShowEditModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEventModal, setShowEventModal] = useState(false);
