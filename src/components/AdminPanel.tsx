@@ -10,6 +10,9 @@ type Review = Database['public']['Tables']['college_reviews']['Row'];
 
 const collegeTypes = ['Government', 'Government Aided', 'Self Financing'] as const;
 const districts = ['Thiruvananthapuram', 'Kollam', 'Pathanamthitta', 'Alappuzha', 'Kottayam', 'Idukki', 'Ernakulam', 'Thrissur', 'Palakkad', 'Malappuram', 'Kozhikode', 'Wayanad', 'Kannur', 'Kasaragod'] as const;
+const categories = ['General', 'SC', 'ST', 'OBC', 'OEC'] as const;
+const branches = ['Computer Science', 'Electronics', 'Electrical', 'Mechanical', 'Civil'] as const;
+
 @@ -16,6 +17,7 @@ export default function AdminPanel() {
   const [colleges, setColleges] = useState<College[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
@@ -19,7 +22,20 @@ const districts = ['Thiruvananthapuram', 'Kollam', 'Pathanamthitta', 'Alappuzha'
 
   // Modal states
 @@ -36,405 +38,47 @@ export default function AdminPanel() {
+ const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEventModal, setShowEventModal] = useState(false);
+  const [showPredictionModal, setShowPredictionModal] = useState(false);
+  
+  // Form states
+  const [selectedCollege, setSelectedCollege] = useState<College | null>(null);
+  const [editForm, setEditForm] = useState<Partial<College>>({});
+  const [eventForm, setEventForm] = useState<Partial<Event>>({});
+  const [predictionForm, setPredictionForm] = useState<Partial<Prediction>>({});
 
+  useEffect(() => {
+    fetchData();
+  }, []);
   async function fetchData() {
     try {
       const [collegesData, eventsData, predictionsData, reviewsData] = await Promise.all([
@@ -135,7 +151,7 @@ const districts = ['Thiruvananthapuram', 'Kollam', 'Pathanamthitta', 'Alappuzha'
       console.error('Error updating review:', error);
     }
   };
-
+ if (loading) {
   const CollegeForm = () => (
     <div className="space-y-4">
       <div>
@@ -269,7 +285,7 @@ const districts = ['Thiruvananthapuram', 'Kollam', 'Pathanamthitta', 'Alappuzha'
       </div>
     </div>
   );
-
+ }
   const EventForm = () => (
     <div className="space-y-4">
       <div>
@@ -730,3 +746,4 @@ const districts = ['Thiruvananthapuram', 'Kollam', 'Pathanamthitta', 'Alappuzha'
       </div>
     </div>
   );
+}
