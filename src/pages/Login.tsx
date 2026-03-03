@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { profileService } from '../lib/supabase';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { signInWithGoogle, signInWithEmail } = useAuth();
+  const { signInWithGoogle, signInWithEmail, user, isLoggedIn } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -13,6 +14,27 @@ const Login = () => {
     email: '',
     password: ''
   });
+
+  // Check if user is already logged in with complete profile, redirect to home
+  useEffect(() => {
+    const checkAndRedirect = async () => {
+      if (isLoggedIn && user) {
+        // Check if profile is complete
+        const { data: profile } = await profileService.getProfile(user.id);
+        if (profile && profile.full_name && profile.phone && profile.profession && profile.qualification) {
+          // Profile is complete, redirect to home
+          navigate('/', { replace: true });
+        } else if (!profile) {
+          // No profile, redirect to complete-profile
+          navigate('/complete-profile', { replace: true });
+        } else {
+          // Profile incomplete, redirect to complete-profile
+          navigate('/complete-profile', { replace: true });
+        }
+      }
+    };
+    checkAndRedirect();
+  }, [isLoggedIn, user, navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,8 +53,10 @@ const Login = () => {
       const { error } = await signInWithEmail(formData.email, formData.password);
       if (error) {
         setError(error.message);
+      } else {
+        // Clean up form and let the useEffect above handle navigation
+        setFormData({ email: '', password: '' });
       }
-      // No navigation here - AuthContext will handle redirection based on profile completion
     } catch (err: any) {
       setError(err.message || 'An error occurred during login');
     } finally {

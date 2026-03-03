@@ -113,7 +113,6 @@ const CompleteProfile = () => {
         user_id: user.id,
         full_name: formData.fullName,
         phone: formData.phone,
-        email: user.email,
         profession: formData.profession,
         qualification: formData.qualification,
         city: formData.city || '',
@@ -127,15 +126,25 @@ const CompleteProfile = () => {
         consent: formData.consent
       };
 
-      const { error } = await profileService.createProfile(profileData);
+      // Check if profile exists first
+      const { data: existingProfile } = await profileService.getProfile(user.id);
       
-      if (error) {
-        setError(error.message || 'Failed to create profile');
+      let result;
+      if (existingProfile) {
+        // Update existing profile
+        result = await profileService.updateProfile(user.id, profileData);
       } else {
-        navigate('/profile');
+        // Create new profile
+        result = await profileService.createProfile(profileData);
+      }
+      
+      if (result.error) {
+        setError(result.error.message || 'Failed to save profile');
+      } else {
+        navigate('/', { replace: true });
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred while creating your profile');
+      setError(err.message || 'An error occurred while saving your profile');
     } finally {
       setLoading(false);
     }

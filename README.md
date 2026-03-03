@@ -1,5 +1,5 @@
 
-[![💻 Built at TinkerSpace](https://img.shields.io/badge/Built%20at-TinkerSpace-blueviolet?style=for-the-badge&label=%F0%9F%92%BBBuilt%20at&labelColor=turquoise&color=white)](https://tinkerhub.org/tinkerspace)
+[![💻 Built for educational purpose](https://img.shields.io/badge/Built%20for-educational_purpose-blueviolet?style=for-the-badge&label=%F0%9F%92%BBBuilt%20for&labelColor=turquoise&color=white)](https://tinkerhub.org/tinkerspace)
 
 
 # SeekGram - College Discovery Platform
@@ -8,7 +8,7 @@ A comprehensive college discovery and management platform built with React, Type
 
 
 ### Netlify Deployment
-1. Go to <seekgram.netlify.app> for running
+1. Go to <https://seekgram.vercel.app> for running
 
 
 ## �� Key Features

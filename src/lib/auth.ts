@@ -1,6 +1,15 @@
 import { supabase } from './supabase';
 import { User } from '@supabase/supabase-js';
 
+// Get the site URL for OAuth redirects
+const getSiteURL = () => {
+  if (!window.location.origin) return '';
+  let url = window.location.origin;
+  // Ensure there's no trailing slash
+  url = url.replace(/\/$/, '');
+  return url;
+};
+
 // Handle OAuth callback and redirect logic
 export const handleOAuthCallback = async (user: User) => {
   try {
@@ -48,16 +57,17 @@ export const handleOAuthCallback = async (user: User) => {
   }
 };
 
-// Enhanced Google OAuth sign-in with better error handling and fallback mechanism
-export const signInWithGoogleEnhanced = async (redirectTo?: string) => {
+// Simplified Google OAuth sign-in
+export const signInWithGoogleEnhanced = async () => {
   try {
-    console.log('Starting Google OAuth flow with redirectTo:', redirectTo || 'default');
+    console.log('Starting Google OAuth flow');
     
-    // Use the auth callback route as the primary redirect
-    const callbackUrl = `${window.location.origin}/auth/callback`;
+    // Use the standard Supabase OAuth callback format
+    // This uses the SUPABASE_REDIRECT_URL by default, but we can specify a custom one
+    const callbackUrl = `${getSiteURL()}/auth/callback`;
     console.log('Using callback URL:', callbackUrl);
     
-    // Primary OAuth flow
+    // Initiate OAuth flow with Google
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -66,91 +76,34 @@ export const signInWithGoogleEnhanced = async (redirectTo?: string) => {
           access_type: 'offline',
           prompt: 'consent',
         },
-        scopes: 'email profile openid'
       }
     });
 
     if (error) {
-      console.error('Primary Google OAuth flow error:', error);
-      // Attempt fallback with different redirect URI format
-      return await googleOAuthFallback(redirectTo);
-    }
-
-    console.log('Google OAuth initiated successfully:', data);
-    return { data, error: null };
-  } catch (error) {
-    console.error('Google sign-in failed:', error);
-    // Try fallback as last resort
-    return await googleOAuthFallback(redirectTo);
-  }
-};
-
-// Fallback Google OAuth implementation with alternative redirect URI format
-const googleOAuthFallback = async (redirectTo?: string) => {
-  try {
-    console.log('Attempting Google OAuth fallback mechanism...');
-    
-    // Try with complete-profile as fallback
-    const fallbackRedirectTo = `${window.location.origin}/complete-profile`;
-    console.log('Using fallback redirect URL:', fallbackRedirectTo);
-    
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: fallbackRedirectTo,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
-        },
-        scopes: 'email profile openid'
-      }
-    });
-
-    if (error) {
-      console.error('Fallback Google OAuth also failed:', error);
-      // Try second fallback method
-      return await googleOAuthSecondFallback(redirectTo);
-    }
-
-    console.log('Google OAuth fallback succeeded:', data);
-    return { data, error: null };
-  } catch (error) {
-    console.error('First fallback failed, trying second fallback:', error);
-    return await googleOAuthSecondFallback(redirectTo);
-  }
-};
-
-// Second fallback method using a different approach
-const googleOAuthSecondFallback = async (redirectTo?: string) => {
-  try {
-    console.log('Attempting second Google OAuth fallback mechanism...');
-    
-    // Try with Supabase default callback and site URL approach
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        // Don't specify redirectTo, let Supabase use its configured Site URL
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
-        },
-        scopes: 'email profile openid',
-        skipBrowserRedirect: false // Ensure browser redirect happens
-      }
-    });
-
-    if (error) {
-      console.error('Second fallback Google OAuth also failed:', error);
+      console.error('Google OAuth failed:', error);
       throw error;
     }
 
-    console.log('Second fallback Google OAuth succeeded:', data);
-    return { data, error: null };
-  } catch (error) {
-    console.error('All Google OAuth attempts failed:', error);
-    throw error;
+    console.log('Google OAuth initiated successfully');
+    return { success: true, data };
+  } catch (error: any) {
+    console.error('Google sign-in error:', error);
+    
+    const errorMessage = error?.message || 'Failed to sign in with Google. Please check your browser console for details.';
+    console.error('Error details:', {
+      message: error?.message,
+      status: error?.status,
+      code: error?.code,
+      details: error?.details
+    });
+    
+    // Return error for UI handling
+    return { success: false, error: errorMessage };
   }
 };
+
+// Provide the original export for backward compatibility
+export const signInWithGoogle = signInWithGoogleEnhanced;
 
 // Check if user has completed profile
 export const hasCompletedProfile = async (userId: string): Promise<boolean> => {

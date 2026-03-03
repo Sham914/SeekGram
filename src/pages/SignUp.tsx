@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const { signInWithGoogle, signUpWithEmail } = useAuth();
+  const { signInWithGoogle, signUpWithEmail, user, isLoggedIn } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -17,6 +17,14 @@ const SignUp = () => {
     password: '',
     confirmPassword: ''
   });
+
+  // Check if user is already logged in, redirect based on profile status
+  useEffect(() => {
+    if (isLoggedIn && user) {
+      // User is logged in, redirect to complete-profile (they'll complete it there)
+      navigate('/complete-profile', { replace: true });
+    }
+  }, [isLoggedIn, user, navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -43,7 +51,7 @@ const SignUp = () => {
         setError(error.message);
       } else {
         const fullName = `${formData.firstName} ${formData.lastName}`.trim();
-        navigate('/complete-profile', { state: { fullName } });
+        // Let the useEffect above handle navigation since user is now logged in
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred during signup');
