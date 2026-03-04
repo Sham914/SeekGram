@@ -53,8 +53,8 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-[#FACC15] rounded-lg flex items-center justify-center border-2 border-[#2563EB]/20">
-              <span className="text-[#2563EB] font-bold text-lg">SG</span>
+            <div className="w-10 h-10 bg-[#FACC15] rounded-lg flex items-center justify-center border-2 border-[#2563EB]/20 overflow-hidden">
+              <img src="/logo.jpg" alt="SeekGram Logo" className="w-full h-full object-cover" />
             </div>
             <span className="text-xl font-bold text-gray-900">SeekGram</span>
           </Link>

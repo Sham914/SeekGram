@@ -37,8 +37,8 @@ const Home = () => {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Logo */}
           <div className="flex justify-center mb-8">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#eac843] rounded-2xl flex items-center justify-center border-4 border-[#191970]/10 shadow-lg">
-              <span className="text-[#191970] font-bold text-3xl sm:text-4xl">SG</span>
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#eac843] rounded-2xl flex items-center justify-center border-4 border-[#191970]/10 shadow-lg overflow-hidden">
+              <img src="/logo.jpg" alt="SeekGram Logo" className="w-full h-full object-cover" />
             </div>
           </div>
           
