@@ -82,6 +82,9 @@ class AdminServiceImpl implements AdminService {
 
       if (error) return { data: [], error: error as Error };
       return { data: data?.permissions || [], error: null };
+    } catch (err) {
+      return { data: [], error: err as Error };
+    }
   }
 
   // College management
