@@ -880,7 +880,10 @@ const Admin = () => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <button
-                    onClick={() => setShowCollegeForm(true)}
+                    onClick={() => {
+                      setEditingCollege(null);
+                      setShowCollegeForm(true);
+                    }}
                     className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#2563EB] hover:bg-blue-50 transition-all duration-200"
                   >
                     <Plus className="w-6 h-6 text-gray-400 mr-2" />
@@ -888,7 +891,10 @@ const Admin = () => {
                   </button>
                   
                   <button
-                    onClick={() => setShowEventForm(true)}
+                    onClick={() => {
+                      setEditingEvent(null);
+                      setShowEventForm(true);
+                    }}
                     className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#2563EB] hover:bg-blue-50 transition-all duration-200"
                   >
                     <Plus className="w-6 h-6 text-gray-400 mr-2" />
@@ -896,7 +902,10 @@ const Admin = () => {
                   </button>
                   
                   <button
-                    onClick={() => setShowKeamForm(true)}
+                    onClick={() => {
+                      setEditingKeam(null);
+                      setShowKeamForm(true);
+                    }}
                     className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#2563EB] hover:bg-blue-50 transition-all duration-200"
                   >
                     <Plus className="w-6 h-6 text-gray-400 mr-2" />
@@ -940,7 +949,10 @@ const Admin = () => {
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-semibold text-gray-900">Manage Colleges</h2>
                 <button
-                  onClick={() => setShowCollegeForm(true)}
+                  onClick={() => {
+                    setEditingCollege(null);
+                    setShowCollegeForm(true);
+                  }}
                   className="bg-[#2563EB] text-white px-4 py-2 rounded-lg hover:bg-[#1d4ed8] transition-all duration-200 flex items-center"
                 >
                   <Plus className="w-4 h-4 mr-2" />
@@ -999,7 +1011,10 @@ const Admin = () => {
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-semibold text-gray-900">Manage Events</h2>
                 <button
-                  onClick={() => setShowEventForm(true)}
+                  onClick={() => {
+                    setEditingEvent(null);
+                    setShowEventForm(true);
+                  }}
                   className="bg-[#2563EB] text-white px-4 py-2 rounded-lg hover:bg-[#1d4ed8] transition-all duration-200 flex items-center"
                 >
                   <Plus className="w-4 h-4 mr-2" />
@@ -1056,7 +1071,10 @@ const Admin = () => {
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-semibold text-gray-900">KEAM Rank Data</h2>
                 <button
-                  onClick={() => setShowKeamForm(true)}
+                  onClick={() => {
+                    setEditingKeam(null);
+                    setShowKeamForm(true);
+                  }}
                   className="bg-[#2563EB] text-white px-4 py-2 rounded-lg hover:bg-[#1d4ed8] transition-all duration-200 flex items-center"
                 >
                   <Plus className="w-4 h-4 mr-2" />
