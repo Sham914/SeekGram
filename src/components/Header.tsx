@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, User, LogOut } from 'lucide-react';
+import { Menu, X, User, LogOut, Shield } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useAdmin } from '../hooks/useAdmin';
 import { profileService } from '../lib/supabase';
 
 const Header = () => {
@@ -10,6 +11,7 @@ const Header = () => {
   const [userFullName, setUserFullName] = useState<string>('');
   const location = useLocation();
   const { isLoggedIn, user, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -96,6 +98,16 @@ const Header = () => {
                       <User className="w-4 h-4" />
                       <span>My Profile</span>
                     </Link>
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <Shield className="w-4 h-4" />
+                        <span>Admin Panel</span>
+                      </Link>
+                    )}
                     <button 
                       onClick={handleSignOut}
                       className="flex items-center space-x-2 px-4 py-2 text-red-600 hover:bg-red-50 w-full text-left"
@@ -161,6 +173,16 @@ const Header = () => {
                     >
                       My Profile
                     </Link>
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        className="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg flex items-center space-x-2"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <Shield className="w-4 h-4" />
+                        <span>Admin Panel</span>
+                      </Link>
+                    )}
                     <button 
                       onClick={handleSignOut}
                       className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg text-left"
