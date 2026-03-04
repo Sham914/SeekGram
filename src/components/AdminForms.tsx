@@ -49,6 +49,28 @@ export const CollegeForm: React.FC<CollegeFormProps> = ({ isOpen, onClose, onSub
         rating: college.rating || 0,
         image_url: college.image_url || ''
       });
+    } else {
+      setFormData({
+        name: '',
+        college_code: '',
+        type: 'engineering',
+        location: '',
+        description: '',
+        courses_offered: [],
+        facilities: [],
+        contact_info: {
+          phone: '',
+          email: '',
+          website: ''
+        },
+        admission_info: {
+          requirements: '',
+          process: '',
+          fees: ''
+        },
+        rating: 0,
+        image_url: ''
+      });
     }
   }, [college]);
 
@@ -274,6 +296,23 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
         max_participants: event.max_participants || 0,
         image_url: event.image_url || ''
       });
+    } else {
+      setFormData({
+        title: '',
+        description: '',
+        category: 'academic',
+        date: '',
+        time: '',
+        location: '',
+        organizer: '',
+        contact_info: {
+          phone: '',
+          email: ''
+        },
+        registration_required: false,
+        max_participants: 0,
+        image_url: ''
+      });
     }
   }, [event]);
 
@@ -498,6 +537,17 @@ export const KEAMForm: React.FC<KEAMFormProps> = ({ isOpen, onClose, onSubmit, k
         total_seats: keamData.total_seats || 0,
         fees: keamData.fees || 0,
         duration: keamData.duration || ''
+      });
+    } else {
+      setFormData({
+        year: new Date().getFullYear(),
+        college_name: '',
+        course_name: '',
+        category: 'general',
+        rank_cutoff: 0,
+        total_seats: 0,
+        fees: 0,
+        duration: ''
       });
     }
   }, [keamData]);
