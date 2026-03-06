@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -50,7 +50,6 @@ const SignUp = () => {
       if (error) {
         setError(error.message);
       } else {
-        const fullName = `${formData.firstName} ${formData.lastName}`.trim();
         // Let the useEffect above handle navigation since user is now logged in
       }
     } catch (err: any) {
@@ -66,15 +65,7 @@ const SignUp = () => {
 
     try {
       const result = await signInWithGoogle();
-      
-      // If not successful and not redirected, handle the error
-      if (!result.success) {
-        setError('Google signup failed. Please try again or use email signup.');
-        setLoading(false);
-        return;
-      }
-      
-      // Note: If successful, the user will be redirected to Google OAuth
+      await signInWithGoogle();// Note: If successful, the user will be redirected to Google OAuth
       // The loading state will be handled by the auth state change
       // We'll keep the loading state true since redirection is happening
     } catch (err: any) {
@@ -91,7 +82,7 @@ const SignUp = () => {
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
             <div className="w-10 h-10 bg-[#FACC15] rounded-lg flex items-center justify-center border-2 border-[#2563EB]/20">
-              <span className="text-[#2563EB] font-bold">SG</span>
+              <img src="/logo.jpg" alt="SeekGram Logo" className="w-full h-full object-cover" />
             </div>
             <span className="text-2xl font-bold text-gray-900">SeekGram</span>
           </Link>

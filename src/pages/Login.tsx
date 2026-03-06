@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -69,15 +69,7 @@ const Login = () => {
     setError('');
 
     try {
-      const result = await signInWithGoogle();
-      
-      // If not successful and not redirected, handle the error
-      if (!result.success) {
-        setError('Google login failed. Please try again or use email login.');
-        setLoading(false);
-        return;
-      }
-      
+      await signInWithGoogle();
       // Note: If successful, the user will be redirected to Google OAuth
       // The loading state will be handled by the auth state change
       // We'll keep the loading state true since redirection is happening
@@ -95,7 +87,7 @@ const Login = () => {
         <div className="text-center mb-6 sm:mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-4 sm:mb-6">
             <div className="w-10 h-10 bg-[#FACC15] rounded-lg flex items-center justify-center border-2 border-[#2563EB]/20">
-              <span className="text-[#2563EB] font-bold">SG</span>
+              <img src="/logo.jpg" alt="SeekGram Logo" className="w-full h-full object-cover" />
             </div>
             <span className="text-xl sm:text-2xl font-bold text-gray-900">SeekGram</span>
           </Link>

@@ -1,17 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Users, Building2, Calendar, FileText, Upload, 
   Settings, BarChart3, Shield, Plus, Edit, Trash2,
   Download, Eye, CheckCircle, XCircle, AlertCircle,
-  UserPlus, UserMinus, RefreshCw, BarChart, Search,
-  Filter, MoreVertical, Clock, MapPin, Phone, Mail
+  UserPlus, UserMinus, RefreshCw, Search,
+  Filter
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { 
-  collegeService, 
-  eventService, 
-  keamService,
   AdminRole,
   College,
   Event,
@@ -39,9 +36,9 @@ const Admin = () => {
   // Data states
   const { colleges, refetch: refetchColleges } = useColleges();
   const { events, refetch: refetchEvents } = useEvents();
-  const { keamData, loading: keamLoading, error: keamError, refetch: refetchKEAM } = useKEAM();
-  const [fileUploads, setFileUploads] = useState<FileUpload[]>([]);
-  const [flaggedReviews, setFlaggedReviews] = useState<FlaggedReview[]>([]);
+  const { keamData, refetch: refetchKEAM } = useKEAM();
+  // const [fileUploads, setFileUploads] = useState<FileUpload[]>([]);
+  // const [flaggedReviews, setFlaggedReviews] = useState<FlaggedReview[]>([]);
   const { reviews, refetch: refetchReviews } = useReviews();
   const [reviewStatusFilter, setReviewStatusFilter] = useState<'all' | 'pending' | 'accepted' | 'rejected'>('all');
   const [reviewCollegeFilter, setReviewCollegeFilter] = useState('all');
@@ -60,8 +57,8 @@ const Admin = () => {
   
   // Additional data states
   const [users, setUsers] = useState<any[]>([]);
-  const [stats, setStats] = useState<any>(null);
-  const [loadingStats, setLoadingStats] = useState(false);
+  // const [stats, setStats] = useState<any>(null);
+  // const [loadingStats, setLoadingStats] = useState(false);
   
   // Loading states for different operations
   const [loadingOperations, setLoadingOperations] = useState<{[key: string]: boolean}>({});
@@ -612,26 +609,26 @@ const Admin = () => {
   };
 
   // Analytics and export handlers
-  const handleLoadStats = async () => {
-    setLoadingStats(true);
-    try {
-      const { data, error } = await adminService.getDashboardStats();
-      
-      if (error) {
-        console.error('Failed to load stats:', error);
-        alert('Failed to load stats: ' + error.message);
-        return;
-      }
-
-      setStats(data);
-
-    } catch (err) {
-      console.error('Load stats error:', err);
-      alert('Failed to load stats: ' + (err as Error).message);
-    } finally {
-      setLoadingStats(false);
-    }
-  };
+  // const handleLoadStats = async () => {
+  //   setLoadingStats(true);
+  //   try {
+  //     const { data, error } = await adminService.getDashboardStats();
+  //     
+  //     if (error) {
+  //       console.error('Failed to load stats:', error);
+  //       alert('Failed to load stats: ' + error.message);
+  //       return;
+  //     }
+  //
+  //     setStats(data);
+  //
+  //   } catch (err) {
+  //     console.error('Load stats error:', err);
+  //     alert('Failed to load stats: ' + (err as Error).message);
+  //   } finally {
+  //     setLoadingStats(false);
+  //   }
+  // };
 
   const handleExportData = async (dataType: string) => {
     try {

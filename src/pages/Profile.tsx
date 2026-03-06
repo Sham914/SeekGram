@@ -72,7 +72,7 @@ const Profile = () => {
     if (profile && profile.avatar_url) setAvatarUrl(profile.avatar_url);
   }, [profile]);
 
-  const onCropComplete = (croppedArea: any, croppedAreaPixels: any) => {
+  const onCropComplete = (_croppedArea: any, croppedAreaPixels: any) => {
     setCroppedAreaPixels(croppedAreaPixels);
   };
 
@@ -126,7 +126,7 @@ const Profile = () => {
       const croppedBlob = await getCroppedImg(previewUrl || '', croppedAreaPixels);
       const fileExt = selectedImage.name.split('.').pop();
       const fileName = `${user.id}_${Date.now()}.${fileExt}`;
-      const { data, error } = await supabase.storage.from('avatars').upload(fileName, croppedBlob, { upsert: true, contentType: 'image/jpeg' });
+      const { error } = await supabase.storage.from('avatars').upload(fileName, croppedBlob, { upsert: true, contentType: 'image/jpeg' });
       if (error) throw error;
       const { data: publicUrlData } = supabase.storage.from('avatars').getPublicUrl(fileName);
       const publicUrl = publicUrlData.publicUrl;
