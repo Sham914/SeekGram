@@ -37,8 +37,8 @@ const Admin = () => {
   const { colleges, refetch: refetchColleges } = useColleges();
   const { events, refetch: refetchEvents } = useEvents();
   const { keamData, refetch: refetchKEAM } = useKEAM();
-  // const [fileUploads, setFileUploads] = useState<FileUpload[]>([]);
-  // const [flaggedReviews, setFlaggedReviews] = useState<FlaggedReview[]>([]);
+  const [fileUploads, _setFileUploads] = useState<FileUpload[]>([]);
+  const [flaggedReviews, _setFlaggedReviews] = useState<FlaggedReview[]>([]);
   const { reviews, refetch: refetchReviews } = useReviews();
   const [reviewStatusFilter, setReviewStatusFilter] = useState<'all' | 'pending' | 'accepted' | 'rejected'>('all');
   const [reviewCollegeFilter, setReviewCollegeFilter] = useState('all');

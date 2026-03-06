@@ -86,7 +86,7 @@ const Login = () => {
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-4 sm:mb-6">
-            <div className="w-10 h-10 bg-[#FACC15] rounded-lg flex items-center justify-center border-2 border-[#2563EB]/20">
+            <div className="w-10 h-10 bg-[#FACC15] rounded-lg flex items-center justify-center border-2 border-[#2563EB]/20 overflow-hidden">
               <img src="/logo.jpg" alt="SeekGram Logo" className="w-full h-full object-cover" />
             </div>
             <span className="text-xl sm:text-2xl font-bold text-gray-900">SeekGram</span>

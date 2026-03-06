@@ -64,7 +64,7 @@ const SignUp = () => {
     setError('');
 
     try {
-      const result = await signInWithGoogle();
+      //const result = await signInWithGoogle();
       await signInWithGoogle();// Note: If successful, the user will be redirected to Google OAuth
       // The loading state will be handled by the auth state change
       // We'll keep the loading state true since redirection is happening
@@ -81,7 +81,7 @@ const SignUp = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <div className="w-10 h-10 bg-[#FACC15] rounded-lg flex items-center justify-center border-2 border-[#2563EB]/20">
+            <div className="w-10 h-10 bg-[#FACC15] rounded-lg flex items-center justify-center border-2 border-[#2563EB]/20 overflow-hidden">
               <img src="/logo.jpg" alt="SeekGram Logo" className="w-full h-full object-cover" />
             </div>
             <span className="text-2xl font-bold text-gray-900">SeekGram</span>
