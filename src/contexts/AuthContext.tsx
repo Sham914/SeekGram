@@ -107,18 +107,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // If successful, the user will be redirected to Google
       console.log('Google OAuth initiated successfully:', data);
-      
-      // Return success for UI handling
-      return { success: true, data };
     } catch (error: any) {
       console.error('Google sign-in completely failed:', error);
       
       // Provide user-friendly error message
       const errorMessage = error?.message || 'Unable to sign in with Google. Please try again later.';
       alert(errorMessage);
-      
-      // Return failure for UI handling
-      return { success: false, error };
     }
   };
 

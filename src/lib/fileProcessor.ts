@@ -312,7 +312,7 @@ class FileProcessor {
     // Check if row contains college data (has college name and rank)
     if (row.length < 3) return false;
     
-    const hasCollegeName = row[0] && row[0].length > 3;
+    const hasCollegeName = !!(row[0] && row[0].length > 3);
     const hasRank = row.some(cell => {
       const num = parseInt(cell);
       return num && num > 0 && num < 100000; // Reasonable rank range
@@ -410,7 +410,7 @@ class FileProcessor {
     return 'engineering'; // Default
   }
 
-  private generateDescription(name: string, type: string, location?: string): string {
+  private generateDescription(_name: string, type: string, location?: string): string {
     const typeDescriptions = {
       engineering: 'A premier engineering institution offering quality education and excellent placement opportunities.',
       medical: 'A leading medical college providing comprehensive healthcare education and training.',

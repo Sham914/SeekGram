@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, MapPin, Star, Globe, Phone, Mail, Users, Calendar, Award, BookOpen, Edit, User } from 'lucide-react';
+import { ArrowLeft, MapPin, Star, Globe, Phone, Mail, Users, Calendar, Award, Edit, User } from 'lucide-react';
 import { collegeService, reviewService, type College, type Review } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useReviews } from '../contexts/ReviewsContext';
@@ -16,7 +16,6 @@ const CollegeDetails = () => {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [userReview, setUserReview] = useState<Review | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [reviewFormData, setReviewFormData] = useState({
     rating: 5,
     reviewText: ''
@@ -29,12 +28,10 @@ const CollegeDetails = () => {
       if (!id) return;
       
       setLoading(true);
-      setError(null);
       
       const { data, error } = await collegeService.getCollegeById(id);
       
       if (error) {
-        setError('Failed to fetch college details. Please try again.');
         console.error('Error fetching college:', error);
       } else {
         setCollege(data);
@@ -428,14 +425,14 @@ const CollegeDetails = () => {
                   </div>
                 )}
                 {college.contact_email && (
-                  <div className="flex items-center">
-                    <Mail className="w-5 h-5 text-gray-400 mr-3" />
-                    <span className="text-gray-700">{college.contact_email}</span>
+                  <div className="flex items-start">
+                    <Mail className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-700 break-all">{college.contact_email}</span>
                   </div>
                 )}
                 {college.address && (
                   <div className="flex items-start">
-                    <MapPin className="w-5 h-5 text-gray-400 mr-3 mt-0.5" />
+                    <MapPin className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
                     <span className="text-gray-700">{college.address}</span>
                   </div>
                 )}
