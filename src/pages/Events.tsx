@@ -25,7 +25,7 @@ const Events = () => {
       (event.location && event.location.toLowerCase().includes(searchTerm.toLowerCase()));
     // Date filter logic can be added as needed
     return matchesCategory && matchesLocation && matchesSearch;
-  }), [events, selectedCategory, selectedLocation, searchTerm]);
+  }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()), [events, selectedCategory, selectedLocation, searchTerm]);
 
   // Pagination logic
   const EVENTS_PER_PAGE = 15;

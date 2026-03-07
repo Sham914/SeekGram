@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, User, LogOut, Shield } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -9,10 +9,21 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [userFullName, setUserFullName] = useState<string>('');
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const { isLoggedIn, user, signOut } = useAuth();
   const { isAdmin } = useAdmin();
   
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (user?.id) {
@@ -79,7 +90,7 @@ const Header = () => {
           {/* User Menu / Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             {isLoggedIn ? (
-              <div className="relative">
+              <div className="relative" ref={userMenuRef}>
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center space-x-2 bg-[#2563EB] text-white px-4 py-2 rounded-lg hover:bg-[#1d4ed8] transition-all duration-200"
