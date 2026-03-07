@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { User, Phone, MapPin, GraduationCap, Briefcase, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '../contexts/AuthContext';
 import { profileService } from '../lib/supabase';
 
@@ -81,12 +86,9 @@ const CompleteProfile = () => {
           <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Login Required</h2>
             <p className="text-gray-600 mb-6">You need to be logged in to complete your profile.</p>
-            <Link
-              to="/login"
-              className="bg-[#2563EB] text-white px-6 py-3 rounded-lg hover:bg-[#1d4ed8] transition-all duration-200"
-            >
-              Go to Login
-            </Link>
+            <Button asChild className="h-11">
+              <Link to="/login">Go to Login</Link>
+            </Button>
           </div>
         </div>
       </div>
@@ -215,9 +217,9 @@ const CompleteProfile = () => {
         {/* Form */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600 text-sm">{error}</p>
-            </div>
+            <Alert variant="destructive" className="mb-6">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -229,10 +231,8 @@ const CompleteProfile = () => {
               </h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name *
-                  </label>
-                  <input
+                  <Label htmlFor="fullName" className="mb-1">Full Name *</Label>
+                  <Input
                     type="text"
                     id="fullName"
                     name="fullName"
@@ -240,17 +240,15 @@ const CompleteProfile = () => {
                     onChange={handleInputChange}
                     required
                     disabled={loading}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
+                    className="h-11 mt-1"
                     placeholder="Enter your full name"
                   />
                 </div>
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number *
-                  </label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                    <input
+                  <Label htmlFor="phone" className="mb-1">Phone Number *</Label>
+                  <div className="relative mt-1">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Input
                       type="tel"
                       id="phone"
                       name="phone"
@@ -258,23 +256,21 @@ const CompleteProfile = () => {
                       onChange={handleInputChange}
                       required
                       disabled={loading}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
+                      className="pl-10 h-11"
                       placeholder="Enter your phone number"
                     />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Email *
-                  </label>
-                  <input
+                  <Label htmlFor="email" className="mb-1">Email *</Label>
+                  <Input
                     type="email"
                     id="email"
                     name="email"
                     value={formData.email}
                     readOnly
                     disabled
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
+                    className="h-11 mt-1 bg-gray-100 text-gray-500 cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -288,10 +284,8 @@ const CompleteProfile = () => {
               </h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
-                    City *
-                  </label>
-                  <input
+                  <Label htmlFor="city" className="mb-1">City *</Label>
+                  <Input
                     type="text"
                     id="city"
                     name="city"
@@ -299,15 +293,13 @@ const CompleteProfile = () => {
                     onChange={handleInputChange}
                     required
                     disabled={loading}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
+                    className="h-11 mt-1"
                     placeholder="Enter your city"
                   />
                 </div>
                 <div>
-                  <label htmlFor="pincode" className="block text-sm font-medium text-gray-700 mb-1">
-                    Pincode *
-                  </label>
-                  <input
+                  <Label htmlFor="pincode" className="mb-1">Pincode *</Label>
+                  <Input
                     type="text"
                     id="pincode"
                     name="pincode"
@@ -315,7 +307,7 @@ const CompleteProfile = () => {
                     onChange={handleInputChange}
                     required
                     disabled={loading}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
+                    className="h-11 mt-1"
                     placeholder="Enter your pincode"
                   />
                 </div>
@@ -330,46 +322,40 @@ const CompleteProfile = () => {
               </h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="profession" className="block text-sm font-medium text-gray-700 mb-1">
-                    Profession *
-                  </label>
-                  <select
-                    id="profession"
-                    name="profession"
+                  <Label htmlFor="profession" className="mb-1">Profession *</Label>
+                  <Select
                     value={formData.profession}
-                    onChange={handleInputChange}
-                    required
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, profession: value }))}
                     disabled={loading}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
+                    required
                   >
-                    <option value="">Select your profession</option>
-                    {professions.map(profession => (
-                      <option key={profession.value} value={profession.value}>
-                        {profession.label}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger id="profession" className="w-full h-11 mt-1">
+                      <SelectValue placeholder="Select your profession" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {professions.map(p => (
+                        <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
-                  <label htmlFor="qualification" className="block text-sm font-medium text-gray-700 mb-1">
-                    Highest Qualification *
-                  </label>
-                  <select
-                    id="qualification"
-                    name="qualification"
+                  <Label htmlFor="qualification" className="mb-1">Highest Qualification *</Label>
+                  <Select
                     value={formData.qualification}
-                    onChange={handleInputChange}
-                    required
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, qualification: value }))}
                     disabled={loading}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
+                    required
                   >
-                    <option value="">Select your qualification</option>
-                    {qualifications.map(qualification => (
-                      <option key={qualification.value} value={qualification.value}>
-                        {qualification.label}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger id="qualification" className="w-full h-11 mt-1">
+                      <SelectValue placeholder="Select your qualification" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {qualifications.map(q => (
+                        <SelectItem key={q.value} value={q.value}>{q.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
@@ -383,59 +369,51 @@ const CompleteProfile = () => {
                 </h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="ugCollege" className="block text-sm font-medium text-gray-700 mb-1">
-                      College Name
-                    </label>
-                    <input
+                    <Label htmlFor="ugCollege" className="mb-1">College Name</Label>
+                    <Input
                       type="text"
                       id="ugCollege"
                       name="ugCollege"
                       value={formData.ugCollege}
                       onChange={handleInputChange}
                       disabled={loading}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
+                      className="h-11 mt-1"
                       placeholder="Enter your college name"
                     />
                   </div>
                   <div>
-                    <label htmlFor="ugBranch" className="block text-sm font-medium text-gray-700 mb-1">
-                      Branch
-                    </label>
-                    <select
-                      id="ugBranch"
-                      name="ugBranch"
+                    <Label htmlFor="ugBranch" className="mb-1">Branch</Label>
+                    <Select
                       value={formData.ugBranch}
-                      onChange={handleInputChange}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, ugBranch: value }))}
                       disabled={loading}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
                     >
-                      <option value="">Select your branch</option>
-                      {branches.map(branch => (
-                        <option key={branch.value} value={branch.value}>
-                          {branch.label}
-                        </option>
-                      ))}
-                    </select>
+                      <SelectTrigger id="ugBranch" className="w-full h-11 mt-1">
+                        <SelectValue placeholder="Select your branch" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {branches.map(b => (
+                          <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div>
-                    <label htmlFor="ugYear" className="block text-sm font-medium text-gray-700 mb-1">
-                      Passing Year
-                    </label>
-                    <select
-                      id="ugYear"
-                      name="ugYear"
+                    <Label htmlFor="ugYear" className="mb-1">Passing Year</Label>
+                    <Select
                       value={formData.ugYear}
-                      onChange={handleInputChange}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, ugYear: value }))}
                       disabled={loading}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
                     >
-                      <option value="">Select year</option>
-                      {years.map(year => (
-                        <option key={year.value} value={year.value}>
-                          {year.label}
-                        </option>
-                      ))}
-                    </select>
+                      <SelectTrigger id="ugYear" className="w-full h-11 mt-1">
+                        <SelectValue placeholder="Select year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {years.map(y => (
+                          <SelectItem key={y.value} value={y.value}>{y.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>
@@ -450,59 +428,51 @@ const CompleteProfile = () => {
                 </h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="pgCollege" className="block text-sm font-medium text-gray-700 mb-1">
-                      College Name
-                    </label>
-                    <input
+                    <Label htmlFor="pgCollege" className="mb-1">College Name</Label>
+                    <Input
                       type="text"
                       id="pgCollege"
                       name="pgCollege"
                       value={formData.pgCollege}
                       onChange={handleInputChange}
                       disabled={loading}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
+                      className="h-11 mt-1"
                       placeholder="Enter your college name"
                     />
                   </div>
                   <div>
-                    <label htmlFor="pgBranch" className="block text-sm font-medium text-gray-700 mb-1">
-                      Branch
-                    </label>
-                    <select
-                      id="pgBranch"
-                      name="pgBranch"
+                    <Label htmlFor="pgBranch" className="mb-1">Branch</Label>
+                    <Select
                       value={formData.pgBranch}
-                      onChange={handleInputChange}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, pgBranch: value }))}
                       disabled={loading}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
                     >
-                      <option value="">Select your branch</option>
-                      {branches.map(branch => (
-                        <option key={branch.value} value={branch.value}>
-                          {branch.label}
-                        </option>
-                      ))}
-                    </select>
+                      <SelectTrigger id="pgBranch" className="w-full h-11 mt-1">
+                        <SelectValue placeholder="Select your branch" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {branches.map(b => (
+                          <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div>
-                    <label htmlFor="pgYear" className="block text-sm font-medium text-gray-700 mb-1">
-                      Passing Year
-                    </label>
-                    <select
-                      id="pgYear"
-                      name="pgYear"
+                    <Label htmlFor="pgYear" className="mb-1">Passing Year</Label>
+                    <Select
                       value={formData.pgYear}
-                      onChange={handleInputChange}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, pgYear: value }))}
                       disabled={loading}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
                     >
-                      <option value="">Select year</option>
-                      {years.map(year => (
-                        <option key={year.value} value={year.value}>
-                          {year.label}
-                        </option>
-                      ))}
-                    </select>
+                      <SelectTrigger id="pgYear" className="w-full h-11 mt-1">
+                        <SelectValue placeholder="Select year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {years.map(y => (
+                          <SelectItem key={y.value} value={y.value}>{y.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>
@@ -521,29 +491,30 @@ const CompleteProfile = () => {
                   disabled={loading}
                   className="h-4 w-4 text-[#2563EB] focus:ring-[#2563EB] border-gray-300 rounded"
                 />
-                <label htmlFor="consent" className="ml-2 block text-sm text-gray-700">
+                <Label htmlFor="consent" className="ml-2 text-gray-700 cursor-pointer">
                   I consent to SeekGram using my information to provide personalized recommendations and updates about relevant tech events, colleges, and opportunities. *
-                </label>
+                </Label>
               </div>
             </div>
 
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <button
+              <Button
                 type="submit"
                 disabled={loading || !isFormValid}
-                className="flex-1 bg-[#2563EB] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#1d4ed8] transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 h-11 font-semibold shadow-lg hover:shadow-xl"
               >
                 {loading ? 'Creating Profile...' : 'Complete Profile'}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant="secondary"
                 onClick={handleClear}
                 disabled={loading}
-                className="flex-1 sm:flex-initial bg-gray-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 sm:flex-initial h-11 font-semibold"
               >
                 Clear Form
-              </button>
+              </Button>
             </div>
           </form>
         </div>

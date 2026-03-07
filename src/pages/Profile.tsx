@@ -8,8 +8,10 @@ import {
   Camera, Settings, Bell, Heart, BookOpen, Users
 } from 'lucide-react';
 import Cropper from 'react-easy-crop';
-import Modal from 'react-modal';
 import 'react-easy-crop/react-easy-crop.css';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const Profile = () => {
   const { user, isLoggedIn } = useAuth();
@@ -321,11 +323,11 @@ const Profile = () => {
                     Full Name
                   </label>
                   {editing ? (
-                    <input
+                    <Input
                       type="text"
                       value={formData.full_name}
                       onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      className="h-11"
                       placeholder="Enter your full name"
                     />
                   ) : (
@@ -342,11 +344,11 @@ const Profile = () => {
                     Phone Number
                   </label>
                   {editing ? (
-                    <input
+                    <Input
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      className="h-11"
                       placeholder="Enter your phone number"
                     />
                   ) : (
@@ -363,11 +365,11 @@ const Profile = () => {
                     City
                   </label>
                   {editing ? (
-                    <input
+                    <Input
                       type="text"
                       value={formData.city}
                       onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      className="h-11"
                       placeholder="Enter your city"
                     />
                   ) : (
@@ -384,11 +386,11 @@ const Profile = () => {
                     Pincode
                   </label>
                   {editing ? (
-                    <input
+                    <Input
                       type="text"
                       value={formData.pincode}
                       onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      className="h-11"
                       placeholder="Enter your pincode"
                     />
                   ) : (
@@ -405,11 +407,11 @@ const Profile = () => {
                     Profession
                   </label>
                   {editing ? (
-                    <input
+                    <Input
                       type="text"
                       value={formData.profession}
                       onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      className="h-11"
                       placeholder="Enter your profession"
                     />
                   ) : (
@@ -426,11 +428,11 @@ const Profile = () => {
                     Qualification
                   </label>
                   {editing ? (
-                    <input
+                    <Input
                       type="text"
                       value={formData.qualification}
                       onChange={(e) => setFormData({ ...formData, qualification: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      className="h-11"
                       placeholder="Enter your qualification"
                     />
                   ) : (
@@ -556,10 +558,12 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      {/* Avatar Crop Modal */}
-      <Modal isOpen={showCropModal} onRequestClose={() => setShowCropModal(false)} ariaHideApp={false} className="fixed inset-0 flex items-center justify-center z-50">
-        <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
-          <h2 className="text-lg font-semibold mb-4">Crop your profile picture</h2>
+      {/* Avatar Crop Dialog */}
+      <Dialog open={showCropModal} onOpenChange={setShowCropModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Crop your profile picture</DialogTitle>
+          </DialogHeader>
           <div className="relative w-full h-64 bg-gray-100">
             {previewUrl ? (
               <Cropper
@@ -577,18 +581,19 @@ const Profile = () => {
           </div>
           <div className="flex items-center justify-between mt-4">
             <input type="range" min={1} max={3} step={0.1} value={zoom} onChange={e => setZoom(Number(e.target.value))} className="w-2/3" />
-            <button onClick={handleCropConfirm} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-200" disabled={avatarUploading}>Save</button>
-            <button onClick={() => setShowCropModal(false)} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-all duration-200">Cancel</button>
+            <Button onClick={handleCropConfirm} disabled={avatarUploading} size="sm">Save</Button>
+            <Button variant="secondary" onClick={() => setShowCropModal(false)} size="sm">Cancel</Button>
           </div>
-        </div>
-      </Modal>
-      {/* Avatar Preview Modal */}
-      <Modal isOpen={showAvatarModal} onRequestClose={() => setShowAvatarModal(false)} ariaHideApp={false} className="fixed inset-0 flex items-center justify-center z-50">
-        <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-xs flex flex-col items-center">
+        </DialogContent>
+      </Dialog>
+
+      {/* Avatar Preview Dialog */}
+      <Dialog open={showAvatarModal} onOpenChange={setShowAvatarModal}>
+        <DialogContent className="max-w-xs flex flex-col items-center">
           <img src={avatarUrl || ''} alt="Avatar Preview" className="w-64 h-64 rounded-full object-cover mb-4" />
-          <button onClick={() => setShowAvatarModal(false)} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-200">Close</button>
-        </div>
-      </Modal>
+          <Button onClick={() => setShowAvatarModal(false)}>Close</Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

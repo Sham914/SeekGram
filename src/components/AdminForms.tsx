@@ -1,6 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { College, Event, KEAMRankData } from '../lib/supabase';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface CollegeFormProps {
   isOpen: boolean;
@@ -87,170 +104,147 @@ export const CollegeForm: React.FC<CollegeFormProps> = ({ isOpen, onClose, onSub
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold">
-            {college ? 'Edit College' : 'Add New College'}
-          </h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <X className="w-6 h-6" />
-          </button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{college ? 'Edit College' : 'Add New College'}</DialogTitle>
+        </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">College Name</label>
-              <input
-                type="text"
+              <Label className="mb-1">College Name</Label>
+              <Input
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">College Code</label>
-              <input
-                type="text"
+              <Label className="mb-1">College Code</Label>
+              <Input
                 value={formData.college_code}
                 onChange={(e) => setFormData({ ...formData, college_code: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-              <select
+              <Label className="mb-1">Type</Label>
+              <Select
                 value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onValueChange={(value) => setFormData({ ...formData, type: value })}
               >
-                <option value="engineering">Engineering</option>
-                <option value="medical">Medical</option>
-                <option value="arts">Arts</option>
-                <option value="commerce">Commerce</option>
-                <option value="science">Science</option>
-              </select>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="engineering">Engineering</SelectItem>
+                  <SelectItem value="medical">Medical</SelectItem>
+                  <SelectItem value="arts">Arts</SelectItem>
+                  <SelectItem value="commerce">Commerce</SelectItem>
+                  <SelectItem value="science">Science</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-              <input
-                type="text"
+              <Label className="mb-1">Location</Label>
+              <Input
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
-              <input
+              <Label className="mb-1">Rating</Label>
+              <Input
                 type="number"
                 min="0"
                 max="5"
                 step="0.1"
                 value={formData.rating}
                 onChange={(e) => setFormData({ ...formData, rating: parseFloat(e.target.value) })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-              <input
+              <Label className="mb-1">Image URL</Label>
+              <Input
                 type="url"
                 value={formData.image_url}
                 onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="https://example.com/image.jpg"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea
+            <Label className="mb-1">Description</Label>
+            <Textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Contact Phone</label>
-              <input
+              <Label className="mb-1">Contact Phone</Label>
+              <Input
                 type="tel"
                 value={formData.contact_info.phone}
                 onChange={(e) => setFormData({
                   ...formData,
                   contact_info: { ...formData.contact_info, phone: e.target.value }
                 })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
-              <input
+              <Label className="mb-1">Contact Email</Label>
+              <Input
                 type="email"
                 value={formData.contact_info.email}
                 onChange={(e) => setFormData({
                   ...formData,
                   contact_info: { ...formData.contact_info, email: e.target.value }
                 })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
-            <input
+            <Label className="mb-1">Website</Label>
+            <Input
               type="url"
               value={formData.contact_info.website}
               onChange={(e) => setFormData({
                 ...formData,
                 contact_info: { ...formData.contact_info, website: e.target.value }
               })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div className="flex justify-end space-x-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
-            >
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center"
-            >
+            </Button>
+            <Button type="submit" disabled={loading} className="flex items-center">
               {loading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
               ) : (
                 <Save className="w-4 h-4 mr-2" />
               )}
               {college ? 'Update College' : 'Add College'}
-            </button>
+            </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
@@ -329,126 +323,112 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold">
-            {event ? 'Edit Event' : 'Add New Event'}
-          </h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <X className="w-6 h-6" />
-          </button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{event ? 'Edit Event' : 'Add New Event'}</DialogTitle>
+        </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Event Title</label>
-              <input
-                type="text"
+              <Label className="mb-1">Event Title</Label>
+              <Input
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-              <select
+              <Label className="mb-1">Category</Label>
+              <Select
                 value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onValueChange={(value) => setFormData({ ...formData, category: value })}
               >
-                <option value="academic">Academic</option>
-                <option value="cultural">Cultural</option>
-                <option value="sports">Sports</option>
-                <option value="technical">Technical</option>
-                <option value="workshop">Workshop</option>
-              </select>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="academic">Academic</SelectItem>
+                  <SelectItem value="cultural">Cultural</SelectItem>
+                  <SelectItem value="sports">Sports</SelectItem>
+                  <SelectItem value="technical">Technical</SelectItem>
+                  <SelectItem value="workshop">Workshop</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-              <input
+              <Label className="mb-1">Date</Label>
+              <Input
                 type="date"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
-              <input
+              <Label className="mb-1">Time</Label>
+              <Input
                 type="time"
                 value={formData.time}
                 onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-              <input
-                type="text"
+              <Label className="mb-1">Location</Label>
+              <Input
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Organizer</label>
-              <input
-                type="text"
+              <Label className="mb-1">Organizer</Label>
+              <Input
                 value={formData.organizer}
                 onChange={(e) => setFormData({ ...formData, organizer: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea
+            <Label className="mb-1">Description</Label>
+            <Textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Contact Phone</label>
-              <input
+              <Label className="mb-1">Contact Phone</Label>
+              <Input
                 type="tel"
                 value={formData.contact_info.phone}
                 onChange={(e) => setFormData({
                   ...formData,
                   contact_info: { ...formData.contact_info, phone: e.target.value }
                 })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
-              <input
+              <Label className="mb-1">Contact Email</Label>
+              <Input
                 type="email"
                 value={formData.contact_info.email}
                 onChange={(e) => setFormData({
                   ...formData,
                   contact_info: { ...formData.contact_info, email: e.target.value }
                 })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -466,42 +446,34 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
 
             {formData.registration_required && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Max Participants</label>
-                <input
+                <Label className="mb-1">Max Participants</Label>
+                <Input
                   type="number"
                   min="1"
                   value={formData.max_participants}
                   onChange={(e) => setFormData({ ...formData, max_participants: parseInt(e.target.value) })}
-                  className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-32"
                 />
               </div>
             )}
           </div>
 
           <div className="flex justify-end space-x-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
-            >
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center"
-            >
+            </Button>
+            <Button type="submit" disabled={loading} className="flex items-center">
               {loading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
               ) : (
                 <Save className="w-4 h-4 mr-2" />
               )}
               {event ? 'Update Event' : 'Add Event'}
-            </button>
+            </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
@@ -565,142 +537,121 @@ export const KEAMForm: React.FC<KEAMFormProps> = ({ isOpen, onClose, onSubmit, k
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold">
-            {keamData ? 'Edit KEAM Data' : 'Add New KEAM Data'}
-          </h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <X className="w-6 h-6" />
-          </button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{keamData ? 'Edit KEAM Data' : 'Add New KEAM Data'}</DialogTitle>
+        </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
-              <input
+              <Label className="mb-1">Year</Label>
+              <Input
                 type="number"
                 min="2020"
                 max="2030"
                 value={formData.year}
                 onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-              <select
+              <Label className="mb-1">Category</Label>
+              <Select
                 value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onValueChange={(value) => setFormData({ ...formData, category: value })}
               >
-                <option value="general">General</option>
-                <option value="sc">SC</option>
-                <option value="st">ST</option>
-                <option value="obc">OBC</option>
-                <option value="ews">EWS</option>
-              </select>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="general">General</SelectItem>
+                  <SelectItem value="sc">SC</SelectItem>
+                  <SelectItem value="st">ST</SelectItem>
+                  <SelectItem value="obc">OBC</SelectItem>
+                  <SelectItem value="ews">EWS</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">College Name</label>
-              <input
-                type="text"
+              <Label className="mb-1">College Name</Label>
+              <Input
                 value={formData.college_name}
                 onChange={(e) => setFormData({ ...formData, college_name: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Course Name</label>
-              <input
-                type="text"
+              <Label className="mb-1">Course Name</Label>
+              <Input
                 value={formData.course_name}
                 onChange={(e) => setFormData({ ...formData, course_name: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Rank Cutoff</label>
-              <input
+              <Label className="mb-1">Rank Cutoff</Label>
+              <Input
                 type="number"
                 min="0"
                 value={formData.rank_cutoff}
                 onChange={(e) => setFormData({ ...formData, rank_cutoff: parseInt(e.target.value) })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Total Seats</label>
-              <input
+              <Label className="mb-1">Total Seats</Label>
+              <Input
                 type="number"
                 min="1"
                 value={formData.total_seats}
                 onChange={(e) => setFormData({ ...formData, total_seats: parseInt(e.target.value) })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Fees (₹)</label>
-              <input
+              <Label className="mb-1">Fees (₹)</Label>
+              <Input
                 type="number"
                 min="0"
                 value={formData.fees}
                 onChange={(e) => setFormData({ ...formData, fees: parseInt(e.target.value) })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
-              <input
-                type="text"
+              <Label className="mb-1">Duration</Label>
+              <Input
                 value={formData.duration}
                 onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="e.g., 4 years"
               />
             </div>
           </div>
 
           <div className="flex justify-end space-x-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
-            >
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center"
-            >
+            </Button>
+            <Button type="submit" disabled={loading} className="flex items-center">
               {loading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
               ) : (
                 <Save className="w-4 h-4 mr-2" />
               )}
               {keamData ? 'Update KEAM Data' : 'Add KEAM Data'}
-            </button>
+            </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
-}; 
+};

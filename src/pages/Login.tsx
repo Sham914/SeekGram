@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '../contexts/AuthContext';
 import { profileService } from '../lib/supabase';
 
@@ -98,16 +102,17 @@ const Login = () => {
         {/* Login Form */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600 text-sm">{error}</p>
-            </div>
+            <Alert variant="destructive" className="mb-4">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
 
           {/* Google Login */}
-          <button
+          <Button
+            variant="outline"
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full flex items-center justify-center space-x-2 bg-white border-2 border-gray-300 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-50 transition-all duration-200 mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-11 space-x-2 border-2 mb-6"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -116,7 +121,7 @@ const Login = () => {
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
             <span>{loading ? 'Signing in...' : 'Continue with Google'}</span>
-          </button>
+          </Button>
 
           {/* Divider */}
           <div className="relative mb-6">
@@ -131,12 +136,10 @@ const Login = () => {
           {/* Email/Password Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email address
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
+              <Label htmlFor="email" className="mb-1">Email address</Label>
+              <div className="relative mt-1">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
                   id="email"
                   name="email"
                   type="email"
@@ -144,19 +147,17 @@ const Login = () => {
                   onChange={handleInputChange}
                   required
                   disabled={loading}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
+                  className="pl-10 h-11"
                   placeholder="Enter your email"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
+              <Label htmlFor="password" className="mb-1">Password</Label>
+              <div className="relative mt-1">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
                   id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
@@ -164,17 +165,19 @@ const Login = () => {
                   onChange={handleInputChange}
                   required
                   disabled={loading}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
+                  className="pl-10 pr-12 h-11"
                   placeholder="Enter your password"
                 />
-                <button
+                <Button
                   type="button"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  variant="ghost"
+                  size="icon-sm"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={loading}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -187,9 +190,9 @@ const Login = () => {
                   disabled={loading}
                   className="h-4 w-4 text-[#2563EB] focus:ring-[#2563EB] border-gray-300 rounded"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                <Label htmlFor="remember-me" className="ml-2 text-gray-700">
                   Remember me
-                </label>
+                </Label>
               </div>
 
               <Link
@@ -200,13 +203,13 @@ const Login = () => {
               </Link>
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#2563EB] text-white py-3 px-4 rounded-lg hover:bg-[#1d4ed8] transition-all duration-200 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full h-11 font-semibold shadow-lg hover:shadow-xl"
             >
               {loading ? 'Signing in...' : 'Sign in'}
-            </button>
+            </Button>
           </form>
 
           {/* Footer */}
