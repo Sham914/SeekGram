@@ -12,6 +12,7 @@ import 'react-easy-crop/react-easy-crop.css';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const Profile = () => {
   const { user, isLoggedIn } = useAuth();
@@ -198,15 +199,84 @@ const Profile = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center py-20">
-            <div className="relative">
-              <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600 mx-auto mb-6"></div>
-              <div className="absolute inset-0 rounded-full border-4 border-purple-200 border-t-purple-600 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+        <div className="max-w-6xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
+
+          {/* Hero card skeleton */}
+          <div className="relative mb-6 sm:mb-8 bg-white rounded-3xl shadow-xl p-4 sm:p-8 border border-gray-100">
+            <div className="flex flex-col lg:flex-row items-center gap-6">
+              {/* Avatar */}
+              <Skeleton className="w-24 h-24 sm:w-32 sm:h-32 rounded-full flex-shrink-0" />
+              <div className="flex-1 w-full space-y-3">
+                <Skeleton className="h-7 w-48" />
+                <Skeleton className="h-4 w-64" />
+                <div className="flex gap-3 mt-2">
+                  <Skeleton className="h-5 w-24 rounded-full" />
+                  <Skeleton className="h-5 w-20 rounded-full" />
+                </div>
+              </div>
+              <div className="flex gap-2 flex-shrink-0">
+                <Skeleton className="h-9 w-24 rounded-lg" />
+                <Skeleton className="h-9 w-28 rounded-lg" />
+              </div>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">Loading your profile...</h3>
-            <p className="text-gray-600 max-w-md mx-auto">We're fetching your personalized information to create the best experience for you.</p>
           </div>
+
+          {/* Stats row skeleton */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl shadow p-4 border border-gray-100 space-y-2">
+                <Skeleton className="h-8 w-10 mx-auto" />
+                <Skeleton className="h-3 w-16 mx-auto" />
+              </div>
+            ))}
+          </div>
+
+          {/* Content cards skeleton */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              <div className="bg-white rounded-2xl shadow p-6 border border-gray-100 space-y-4">
+                <Skeleton className="h-5 w-36" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="space-y-1.5">
+                      <Skeleton className="h-3 w-24" />
+                      <Skeleton className="h-9 w-full rounded-lg" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-white rounded-2xl shadow p-6 border border-gray-100 space-y-3">
+                <Skeleton className="h-5 w-32" />
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <Skeleton className="h-10 w-10 rounded-full flex-shrink-0" />
+                    <div className="flex-1 space-y-1.5">
+                      <Skeleton className="h-4 w-3/4" />
+                      <Skeleton className="h-3 w-1/2" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-6">
+              <div className="bg-white rounded-2xl shadow p-6 border border-gray-100 space-y-3">
+                <Skeleton className="h-5 w-28" />
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Skeleton className="h-4 w-4 rounded" />
+                    <Skeleton className="h-4 flex-1" />
+                  </div>
+                ))}
+              </div>
+              <div className="bg-white rounded-2xl shadow p-6 border border-gray-100 space-y-3">
+                <Skeleton className="h-5 w-24" />
+                <Skeleton className="h-20 w-full rounded-lg" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     );

@@ -1,6 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Save } from 'lucide-react';
-import { College, Event, KEAMRankData } from '../lib/supabase';
+import React, { useState, useEffect, useRef } from 'react';
+import { Save, Search, X, Upload, Image as ImageIcon } from 'lucide-react';
+import { College, Event, KEAMRankData, supabase } from '../lib/supabase';
+import { useColleges } from '../contexts/CollegesContext';
+
+// Match every word the user typed anywhere in the college name (case-insensitive)
+const matchesCollegeSearch = (college: College, query: string): boolean => {
+  if (!query.trim()) return true;
+  const words = query.trim().toLowerCase().split(/\s+/);
+  const name = college.name.toLowerCase();
+  const code = college.college_code.toLowerCase();
+  return words.every(word => name.includes(word) || code.includes(word));
+};
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -256,24 +266,45 @@ interface EventFormProps {
 }
 
 export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit, event }) => {
-  const [formData, setFormData] = useState({
+  const { colleges } = useColleges();
+
+  const emptyForm = {
     title: '',
     description: '',
     category: 'academic',
     date: '',
     time: '',
     location: '',
+    venue: '',
     organizer: '',
-    contact_info: {
-      phone: '',
-      email: ''
-    },
+    contact_info: { phone: '', email: '' },
     registration_required: false,
     max_participants: 0,
     image_url: ''
-  });
+  };
 
+  const [formData, setFormData] = useState(emptyForm);
+  const [collegeSearch, setCollegeSearch] = useState('');
+  const [showCollegeDropdown, setShowCollegeDropdown] = useState(false);
+  const [selectedCollege, setSelectedCollege] = useState<College | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const collegeSearchRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Close college dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (collegeSearchRef.current && !collegeSearchRef.current.contains(e.target as Node)) {
+        setShowCollegeDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   useEffect(() => {
     if (event) {
@@ -284,39 +315,83 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
         date: event.date ? new Date(event.date).toISOString().split('T')[0] : '',
         time: event.time || '',
         location: event.location || '',
+        venue: event.venue || event.location || '',
         organizer: event.organizer || '',
         contact_info: event.contact_info || { phone: '', email: '' },
         registration_required: event.registration_required || false,
         max_participants: event.max_participants || 0,
         image_url: event.image_url || ''
       });
+      setCollegeSearch('');
+      setSelectedCollege(null);
+      setImagePreview(event.image_url || null);
+      setImageFile(null);
     } else {
-      setFormData({
-        title: '',
-        description: '',
-        category: 'academic',
-        date: '',
-        time: '',
-        location: '',
-        organizer: '',
-        contact_info: {
-          phone: '',
-          email: ''
-        },
-        registration_required: false,
-        max_participants: 0,
-        image_url: ''
-      });
+      setFormData(emptyForm);
+      setCollegeSearch('');
+      setSelectedCollege(null);
+      setImagePreview(null);
+      setImageFile(null);
     }
-  }, [event]);
+  }, [event, isOpen]);
+
+  const filteredEventColleges = colleges
+    .filter(c => matchesCollegeSearch(c, collegeSearch))
+    .slice(0, 8);
+
+  const handleCollegeSelect = (college: College) => {
+    setSelectedCollege(college);
+    setCollegeSearch(college.name);
+    setShowCollegeDropdown(false);
+    setFormData(prev => ({
+      ...prev,
+      location: college.location || college.name,
+    }));
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setUploadError(null);
+  };
+
+  const uploadImage = async (): Promise<string> => {
+    // No new file selected — keep whatever URL is already stored
+    if (!imageFile) return formData.image_url;
+    setImageUploading(true);
+    setUploadError(null);
+    try {
+      const ext = (imageFile.name.split('.').pop() || 'jpg').toLowerCase();
+      const path = `events/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadErr } = await supabase.storage
+        .from('event-images')
+        .upload(path, imageFile, { contentType: imageFile.type, upsert: false });
+      if (uploadErr) throw uploadErr;
+      const { data: urlData } = supabase.storage
+        .from('event-images')
+        .getPublicUrl(path);
+      return urlData.publicUrl;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Upload failed';
+      console.error('Image upload failed:', err);
+      setUploadError(msg);
+      return formData.image_url; // fall back gracefully — form still submits
+    } finally {
+      setImageUploading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await onSubmit(formData);
+      const imageUrl = await uploadImage();
+      await onSubmit({ ...formData, image_url: imageUrl || undefined });
       onClose();
     } catch (error) {
+      // uploadImage already set uploadError; other errors surface in console
       console.error('Error submitting event:', error);
     } finally {
       setLoading(false);
@@ -331,6 +406,63 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+
+          {/* ── College picker (searchable) ─────────────────────────── */}
+          <div ref={collegeSearchRef} className="relative">
+            <Label className="mb-1">College</Label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              <Input
+                placeholder="Search college name or code…"
+                value={collegeSearch}
+                className="pl-9 pr-8"
+                onFocus={() => setShowCollegeDropdown(true)}
+                onChange={(e) => {
+                  setCollegeSearch(e.target.value);
+                  setShowCollegeDropdown(true);
+                  if (!e.target.value) {
+                    setSelectedCollege(null);
+                    setFormData(prev => ({ ...prev, location: '' }));
+                  }
+                }}
+                autoComplete="off"
+              />
+              {collegeSearch && (
+                <button
+                  type="button"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  onClick={() => {
+                    setCollegeSearch('');
+                    setSelectedCollege(null);
+                    setFormData(prev => ({ ...prev, location: '' }));
+                  }}
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+            {selectedCollege && (
+              <p className="mt-1 text-xs text-blue-600">
+                {selectedCollege.college_code} · {selectedCollege.location}
+              </p>
+            )}
+            {showCollegeDropdown && filteredEventColleges.length > 0 && (
+              <ul className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-52 overflow-y-auto">
+                {filteredEventColleges.map(c => (
+                  <li
+                    key={c.id}
+                    onMouseDown={(e) => { e.preventDefault(); handleCollegeSelect(c); }}
+                    className="px-3 py-2 cursor-pointer hover:bg-blue-50 text-sm"
+                  >
+                    <span className="font-medium">{c.name}</span>
+                    <span className="ml-2 text-xs text-gray-400">{c.college_code}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* ── Basic info row ──────────────────────────────────────── */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label className="mb-1">Event Title</Label>
@@ -380,10 +512,11 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
             </div>
 
             <div>
-              <Label className="mb-1">Location</Label>
+              <Label className="mb-1">Venue <span className="text-gray-400 font-normal text-xs">(specific location within college)</span></Label>
               <Input
-                value={formData.location}
-                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                placeholder="e.g., Main Auditorium, AB Block"
+                value={formData.venue}
+                onChange={(e) => setFormData({ ...formData, venue: e.target.value })}
                 required
               />
             </div>
@@ -398,6 +531,7 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
             </div>
           </div>
 
+          {/* ── Description ─────────────────────────────────────────── */}
           <div>
             <Label className="mb-1">Description</Label>
             <Textarea
@@ -407,6 +541,58 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
             />
           </div>
 
+          {/* ── Image upload ─────────────────────────────────────────── */}
+          <div>
+            <Label className="mb-1">Event Image</Label>
+            <div className="flex items-start gap-3">
+              {imagePreview ? (
+                <div className="relative w-24 h-16 rounded overflow-hidden border border-gray-200 flex-shrink-0">
+                  <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    className="absolute top-0.5 right-0.5 bg-black/50 rounded-full p-0.5 text-white hover:bg-black/70"
+                    onClick={() => {
+                      setImageFile(null);
+                      setImagePreview(null);
+                      setFormData(prev => ({ ...prev, image_url: '' }));
+                      if (fileInputRef.current) fileInputRef.current.value = '';
+                    }}
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ) : (
+                <div className="w-24 h-16 rounded border-2 border-dashed border-gray-300 flex items-center justify-center flex-shrink-0">
+                  <ImageIcon className="w-6 h-6 text-gray-300" />
+                </div>
+              )}
+              <div className="flex-1">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageChange}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-1.5"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  {imageFile ? 'Change Image' : 'Upload Image'}
+                </Button>
+                <p className="mt-1 text-xs text-gray-400">PNG, JPG or WebP · </p>
+                {uploadError && (
+                  <p className="mt-1 text-xs text-red-500">Upload failed: {uploadError}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* ── Contact ──────────────────────────────────────────────── */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label className="mb-1">Contact Phone</Label>
@@ -433,6 +619,7 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
             </div>
           </div>
 
+          {/* ── Registration ─────────────────────────────────────────── */}
           <div className="flex items-center space-x-4">
             <label className="flex items-center">
               <input
@@ -462,13 +649,13 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={loading} className="flex items-center">
-              {loading ? (
+            <Button type="submit" disabled={loading || imageUploading} className="flex items-center">
+              {loading || imageUploading ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
               ) : (
                 <Save className="w-4 h-4 mr-2" />
               )}
-              {event ? 'Update Event' : 'Add Event'}
+              {imageUploading ? 'Uploading…' : event ? 'Update Event' : 'Add Event'}
             </Button>
           </div>
         </form>
@@ -485,8 +672,10 @@ interface KEAMFormProps {
 }
 
 export const KEAMForm: React.FC<KEAMFormProps> = ({ isOpen, onClose, onSubmit, keamData }) => {
+  const { colleges } = useColleges();
   const [formData, setFormData] = useState({
     year: new Date().getFullYear(),
+    college_code: '',
     college_name: '',
     course_name: '',
     category: 'general',
@@ -496,12 +685,27 @@ export const KEAMForm: React.FC<KEAMFormProps> = ({ isOpen, onClose, onSubmit, k
     duration: ''
   });
 
+  const [collegeSearch, setCollegeSearch] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   useEffect(() => {
     if (keamData) {
       setFormData({
         year: keamData.year || new Date().getFullYear(),
+        college_code: keamData.college_code || '',
         college_name: keamData.college_name || '',
         course_name: keamData.course_name || '',
         category: keamData.category || 'general',
@@ -510,9 +714,11 @@ export const KEAMForm: React.FC<KEAMFormProps> = ({ isOpen, onClose, onSubmit, k
         fees: keamData.fees || 0,
         duration: keamData.duration || ''
       });
+      setCollegeSearch(keamData.college_name || '');
     } else {
       setFormData({
         year: new Date().getFullYear(),
+        college_code: '',
         college_name: '',
         course_name: '',
         category: 'general',
@@ -521,8 +727,26 @@ export const KEAMForm: React.FC<KEAMFormProps> = ({ isOpen, onClose, onSubmit, k
         fees: 0,
         duration: ''
       });
+      setCollegeSearch('');
     }
   }, [keamData]);
+
+  const filteredColleges = colleges.filter(c => matchesCollegeSearch(c, collegeSearch)).slice(0, 8);
+
+  const handleCollegeSelect = (college: College) => {
+    setFormData(prev => ({ ...prev, college_code: college.college_code, college_name: college.name }));
+    setCollegeSearch(college.name);
+    setShowDropdown(false);
+  };
+
+  const handleCollegeSearchChange = (value: string) => {
+    setCollegeSearch(value);
+    setShowDropdown(true);
+    // Clear selection if user edits manually
+    if (formData.college_name && value !== formData.college_name) {
+      setFormData(prev => ({ ...prev, college_code: '', college_name: '' }));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -577,13 +801,55 @@ export const KEAMForm: React.FC<KEAMFormProps> = ({ isOpen, onClose, onSubmit, k
               </Select>
             </div>
 
-            <div>
-              <Label className="mb-1">College Name</Label>
-              <Input
-                value={formData.college_name}
-                onChange={(e) => setFormData({ ...formData, college_name: e.target.value })}
-                required
-              />
+            {/* College search — spans both columns */}
+            <div className="col-span-1 md:col-span-2" ref={searchRef}>
+              <Label className="mb-1">College</Label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <Input
+                  className="pl-9 pr-9"
+                  placeholder="Search by college name or code…"
+                  value={collegeSearch}
+                  onChange={(e) => handleCollegeSearchChange(e.target.value)}
+                  onFocus={() => setShowDropdown(true)}
+                  required
+                />
+                {collegeSearch && (
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    onClick={() => {
+                      setCollegeSearch('');
+                      setFormData(prev => ({ ...prev, college_code: '', college_name: '' }));
+                      setShowDropdown(false);
+                    }}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+
+                {showDropdown && collegeSearch.length > 0 && filteredColleges.length > 0 && (
+                  <ul className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-56 overflow-y-auto">
+                    {filteredColleges.map(college => (
+                      <li
+                        key={college.college_code}
+                        className="flex items-center justify-between px-3 py-2 hover:bg-blue-50 cursor-pointer text-sm"
+                        onMouseDown={(e) => { e.preventDefault(); handleCollegeSelect(college); }}
+                      >
+                        <span className="text-gray-800 truncate">{college.name}</span>
+                        <span className="ml-2 shrink-0 text-xs font-mono bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">{college.college_code}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              {/* Auto-filled code badge */}
+              {formData.college_code && (
+                <p className="mt-1 text-xs text-gray-500">
+                  College code: <span className="font-mono font-semibold text-blue-600">{formData.college_code}</span>
+                </p>
+              )}
             </div>
 
             <div>

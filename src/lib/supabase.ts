@@ -1028,23 +1028,19 @@ export const keamService = {
   // Predict colleges based on KEAM rank
   async predictColleges(keamRank: number, category: string) {
     try {
-      // Get historical data for the last 4 years
-      const currentYear = new Date().getFullYear()
-      const years = [currentYear - 3, currentYear - 2, currentYear - 1, currentYear]
-      
+      // Normalize category to lowercase to match how admin form stores it
+      const normalizedCategory = category.toLowerCase()
+
       const { data: historicalData, error } = await this.getKEAMRankData({
-        category: category
+        category: normalizedCategory
       })
 
       if (error || !historicalData) {
         throw new Error('Failed to fetch historical data')
       }
 
-      // Filter data for the last 4 years
-      const recentData = historicalData.filter(item => years.includes(item.year))
-
-      // Calculate prediction based on historical trends
-      const predictions = this.calculatePredictions(keamRank, category, recentData)
+      // Use all available data — no year filter so even a single year of data works
+      const predictions = this.calculatePredictions(keamRank, normalizedCategory, historicalData)
 
       // Save prediction to database
       const { error: saveError } = await supabase
