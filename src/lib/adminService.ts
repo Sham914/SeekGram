@@ -207,6 +207,7 @@ class AdminServiceImpl implements AdminService {
         transformedData.contact_info = {
           phone: eventData.phone || '',
           email: eventData.email || ''
+        
         };
         
         // Remove individual fields to avoid conflicts

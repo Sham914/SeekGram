@@ -275,6 +275,7 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
     date: '',
     time: '',
     location: '',
+    address: '',
     venue: '',
     organizer: '',
     contact_info: { phone: '', email: '' },
@@ -315,6 +316,7 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
         date: event.date ? new Date(event.date).toISOString().split('T')[0] : '',
         time: event.time || '',
         location: event.location || '',
+        address: event.address || '',
         venue: event.venue || event.location || '',
         organizer: event.organizer || '',
         contact_info: event.contact_info || { phone: '', email: '' },
@@ -345,7 +347,8 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
     setShowCollegeDropdown(false);
     setFormData(prev => ({
       ...prev,
-      location: college.location || college.name,
+      location: college.name,
+      address: college.name,
     }));
   };
 
@@ -422,7 +425,7 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
                   setShowCollegeDropdown(true);
                   if (!e.target.value) {
                     setSelectedCollege(null);
-                    setFormData(prev => ({ ...prev, location: '' }));
+                    setFormData(prev => ({ ...prev, location: '', address: '' }));
                   }
                 }}
                 autoComplete="off"
@@ -434,7 +437,7 @@ export const EventForm: React.FC<EventFormProps> = ({ isOpen, onClose, onSubmit,
                   onClick={() => {
                     setCollegeSearch('');
                     setSelectedCollege(null);
-                    setFormData(prev => ({ ...prev, location: '' }));
+                    setFormData(prev => ({ ...prev, location: '', address: '' }));
                   }}
                 >
                   <X className="w-4 h-4" />
