@@ -6,6 +6,7 @@ import { collegeService, reviewService, type College, type Review } from '../lib
 import { useAuth } from '../contexts/AuthContext';
 import { useReviews } from '../contexts/ReviewsContext';
 import { formatDescriptionWithParagraphIndent } from '../lib/utils';
+import CollegeImage from '../components/CollegeImage';
 
 const CollegeDetails = () => {
   const { id } = useParams();
@@ -183,10 +184,13 @@ const CollegeDetails = () => {
 
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden mb-8">
           <div className="relative">
-            <img
-              src={college.image_url || 'https://images.pexels.com/photos/207692/pexels-photo-207692.jpeg?auto=compress&cs=tinysrgb&w=800'}
-              alt={college.name}
-              className="w-full h-48 sm:h-64 md:h-80 object-cover"
+            <CollegeImage
+              imageUrl={college.image_url}
+              collegeName={college.name}
+              collegeType={college.type}
+              className="w-full h-48 sm:h-64 md:h-80"
+              size="fill"
+              roundedClassName="rounded-none"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">

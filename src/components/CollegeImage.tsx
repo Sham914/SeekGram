@@ -6,7 +6,8 @@ interface CollegeImageProps {
   collegeName: string;
   collegeType?: string;
   className?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'fill';
+  roundedClassName?: string;
 }
 
 const CollegeImage: React.FC<CollegeImageProps> = ({
@@ -14,7 +15,8 @@ const CollegeImage: React.FC<CollegeImageProps> = ({
   collegeName,
   collegeType = 'College',
   className = '',
-  size = 'md'
+  size = 'md',
+  roundedClassName = 'rounded-lg'
 }) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
@@ -83,7 +85,8 @@ const CollegeImage: React.FC<CollegeImageProps> = ({
     sm: 'w-16 h-16',
     md: 'w-32 h-32',
     lg: 'w-48 h-48',
-    xl: 'w-64 h-64'
+    xl: 'w-64 h-64',
+    fill: ''
   };
 
   const handleImageLoad = () => {
@@ -103,13 +106,13 @@ const CollegeImage: React.FC<CollegeImageProps> = ({
   return (
     <div className={`relative ${sizeClasses[size]} ${className}`}>
       {imageLoading && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-lg flex items-center justify-center">
+        <div className={`absolute inset-0 bg-gray-200 animate-pulse ${roundedClassName} flex items-center justify-center`}>
           <ImageIcon className="w-8 h-8 text-gray-400" />
         </div>
       )}
 
       {showGradient ? (
-        <div className={`w-full h-full bg-gradient-to-br ${getGradient().gradient} rounded-lg flex flex-col items-center justify-center gap-1`}>
+        <div className={`w-full h-full bg-gradient-to-br ${getGradient().gradient} ${roundedClassName} flex flex-col items-center justify-center gap-1`}>
           <Building2 className={`w-8 h-8 ${getGradient().icon}`} />
           <p className={`text-xs font-semibold text-center px-1 leading-tight ${getGradient().text}`}>{collegeName}</p>
         </div>
@@ -117,7 +120,7 @@ const CollegeImage: React.FC<CollegeImageProps> = ({
         <img
           src={displayImage}
           alt={`${collegeName} campus`}
-          className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
+          className={`w-full h-full object-cover ${roundedClassName} transition-opacity duration-300 ${
             imageLoading ? 'opacity-0' : 'opacity-100'
           }`}
           onLoad={handleImageLoad}

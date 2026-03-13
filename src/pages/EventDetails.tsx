@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, MapPin, Users, Clock, DollarSign, ExternalLink, Sh
 import { useAuth } from '../contexts/AuthContext';
 import { eventService, Event, EventSpeaker, EventAgenda, EventSponsor } from '../lib/supabase';
 import { formatDescriptionWithParagraphIndent } from '../lib/utils';
+import EventImage from '../components/EventImage';
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -149,10 +150,13 @@ const EventDetails = () => {
         {/* Event Header */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden mb-8">
           <div className="relative">
-            <img
-              src={event.image_url || 'https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=800'}
-              alt={event.title}
-              className="w-full h-48 sm:h-64 md:h-80 object-cover"
+            <EventImage
+              imageUrl={event.image_url}
+              eventTitle={event.title}
+              eventCategory={event.category}
+              className="w-full h-48 sm:h-64 md:h-80"
+              size="fill"
+              roundedClassName="rounded-none"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">

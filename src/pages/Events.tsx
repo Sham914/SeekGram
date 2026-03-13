@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Search, Filter, Calendar, MapPin, Users, Clock, ExternalLink } from 'lucide-react';
 import { useEvents } from '../contexts/EventsContext';
 import { formatDescriptionWithParagraphIndent } from '../lib/utils';
+import EventImage from '../components/EventImage';
 
 const Events = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -161,10 +162,13 @@ const Events = () => {
               {filteredEvents.filter(event => event.featured).map((event) => (
                 <div key={event.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
                   <div className="relative">
-                    <img
-                      src={event.image_url || 'https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=400'}
-                      alt={event.title}
-                      className="w-full h-40 sm:h-48 object-cover"
+                    <EventImage
+                      imageUrl={event.image_url}
+                      eventTitle={event.title}
+                      eventCategory={event.category}
+                      className="w-full h-40 sm:h-48"
+                      size="fill"
+                      roundedClassName="rounded-none"
                     />
                     <div className="absolute top-4 right-4 bg-[#2563EB] text-white px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                       Featured
@@ -220,10 +224,13 @@ const Events = () => {
               {paginatedEvents.map((event) => (
                 <div key={event.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
                   <div className="relative">
-                    <img
-                      src={event.image_url || 'https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=400'}
-                      alt={event.title}
-                      className="w-full h-40 sm:h-48 object-cover"
+                    <EventImage
+                      imageUrl={event.image_url}
+                      eventTitle={event.title}
+                      eventCategory={event.category}
+                      className="w-full h-40 sm:h-48"
+                      size="fill"
+                      roundedClassName="rounded-none"
                     />
                     <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
                       <span className="text-xs sm:text-sm font-medium text-gray-900">{event.category}</span>
