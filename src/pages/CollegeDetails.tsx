@@ -5,6 +5,7 @@ import { ArrowLeft, MapPin, Star, Globe, Phone, Mail, Users, Calendar, Award, Ed
 import { collegeService, reviewService, type College, type Review } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useReviews } from '../contexts/ReviewsContext';
+import { formatDescriptionWithParagraphIndent } from '../lib/utils';
 
 const CollegeDetails = () => {
   const { id } = useParams();
@@ -211,7 +212,7 @@ const CollegeDetails = () => {
           <div className="lg:col-span-2 space-y-6 sm:space-y-8">
             <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-100">
               <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">About</h2>
-              <p className="text-gray-600 leading-relaxed text-sm sm:text-base whitespace-pre-line">{college.description}</p>
+              <p className="text-gray-600 leading-relaxed text-sm sm:text-base whitespace-pre-wrap">{formatDescriptionWithParagraphIndent(college.description)}</p>
             </div>
 
             <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-100">

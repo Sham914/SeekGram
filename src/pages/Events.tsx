@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Calendar, MapPin, Users, Clock, ExternalLink } from 'lucide-react';
 import { useEvents } from '../contexts/EventsContext';
+import { formatDescriptionWithParagraphIndent } from '../lib/utils';
 
 const Events = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -175,7 +176,7 @@ const Events = () => {
                   
                   <div className="p-4 sm:p-6">
                     <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{event.title}</h3>
-                    <p className="text-gray-600 text-xs sm:text-sm mb-4">{event.description}</p>
+                    <p className="text-gray-600 text-xs sm:text-sm mb-4 whitespace-pre-wrap">{formatDescriptionWithParagraphIndent(event.description)}</p>
                     
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center text-gray-600">
@@ -231,7 +232,7 @@ const Events = () => {
                   
                   <div className="p-4 sm:p-6">
                     <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{event.title}</h3>
-                    <p className="text-gray-600 text-xs sm:text-sm mb-4 line-clamp-2">{event.description}</p>
+                    <p className="text-gray-600 text-xs sm:text-sm mb-4 line-clamp-2 whitespace-pre-wrap">{formatDescriptionWithParagraphIndent(event.description)}</p>
                     
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center text-gray-600">

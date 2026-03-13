@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, MapPin, Users, Clock, DollarSign, ExternalLink, Share2, Heart } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { eventService, Event, EventSpeaker, EventAgenda, EventSponsor } from '../lib/supabase';
+import { formatDescriptionWithParagraphIndent } from '../lib/utils';
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -188,9 +189,9 @@ const EventDetails = () => {
             {/* Description */}
             <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-100">
               <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">About This Event</h2>
-              <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">{event.description}</p>
+              <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base whitespace-pre-wrap">{formatDescriptionWithParagraphIndent(event.description)}</p>
               {event.full_description && (
-                <p className="text-gray-600 text-xs sm:text-base">{event.full_description}</p>
+                <p className="text-gray-600 text-xs sm:text-base whitespace-pre-wrap">{formatDescriptionWithParagraphIndent(event.full_description)}</p>
               )}
             </div>
 

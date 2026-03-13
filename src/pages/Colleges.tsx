@@ -5,6 +5,7 @@ import { Search, Filter, MapPin, Star, ExternalLink, GraduationCap, Users } from
 import { collegeService, type College } from '../lib/supabase';
 import CollegeImage from '../components/CollegeImage';
 import { useColleges } from '../contexts/CollegesContext';
+import { formatDescriptionWithParagraphIndent } from '../lib/utils';
 
 const Colleges = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -195,7 +196,7 @@ const Colleges = () => {
                     <span className="text-gray-500 text-xs sm:text-sm ml-2">({college.total_seats} seats)</span>
                   </div>
                   
-                  <p className="text-gray-600 text-xs sm:text-sm mb-4 line-clamp-2">{college.description}</p>
+                  <p className="text-gray-600 text-xs sm:text-sm mb-4 line-clamp-2 whitespace-pre-wrap">{formatDescriptionWithParagraphIndent(college.description)}</p>
                   
                   <div className="mb-4">
                     <div className="flex flex-wrap gap-1">
