@@ -213,7 +213,7 @@ class AdminServiceImpl implements AdminService {
         // Remove individual fields to avoid conflicts
         delete transformedData.phone;
         delete transformedData.email;
-        delete transformedData.website;
+        delete transformedData.website
       }
       
       // Remove fields that don't exist in the database
