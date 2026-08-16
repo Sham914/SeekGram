@@ -7,7 +7,7 @@
 A comprehensive college discovery and management platform built with React, TypeScript, and Supabase.
 
 
-### Netlify Deployment
+### Vercel Deployment
 1. Go to <https://seekgram.vercel.app> for running
 
 
